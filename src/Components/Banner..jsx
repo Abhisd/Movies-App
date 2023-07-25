@@ -5,7 +5,7 @@ export default function Banner(){
 
     useEffect(()=>{
         //fetching data from API
-        axios.get("https://api.themoviedb.org/3/trending/movie/day?api_key=ef18ee10d1abf9cc39599d8923db0394")
+        axios.get("https://api.themoviedb.org/3/movie/top_rated?api_key=ef18ee10d1abf9cc39599d8923db0394")
         .then((response)=>{
             //console.log(response.data.results);
             let movies=response.data.results;
