@@ -3,11 +3,33 @@ import MovieCard from "./MovieCard";
 import Pagination from "./Pagination";
 import axios from "axios";
 import { resolvePath } from "react-router-dom";
+import { ShimmerSimpleGallery,ShimmerPostList } from "react-shimmer-effects-18";
 
 export default function(){
     let [movies,setMovies]=useState(undefined);
     let [pageNo,setPageNo]=useState(1);
+    let [watchList,setWatchList]=useState([]);
     
+    let handleAddToWatchList=(id)=>{
+        // watchList.push(id);
+        // setWatchList(watchList);
+        // console.log(watchList); 
+        let newWatchList=[...watchList,id];
+        localStorage.setItem("movies-app",JSON.stringify(newWatchList));
+        setWatchList(newWatchList);
+        //console.log(newWatchList);
+        //same thing in one line
+        //setWatchList([...watchList,id]);
+    }
+
+    let handleRemoveFromWatchList=(id)=>{
+        let newWatchList=watchList.filter((moviesId)=>{
+            return moviesId!=id;
+        });
+        localStorage.setItem("movies-app",JSON.stringify(newWatchList));
+        setWatchList(newWatchList);
+        //console.log(newWatchList);
+    }
     let handleNext=()=>{
         setPageNo(pageNo+1);
     }
@@ -18,11 +40,14 @@ export default function(){
         }
         
     }
-
+    useEffect(()=>{
+        let favMoviesFromLocalStorage=JSON.parse(localStorage.getItem("movies-app"));
+        setWatchList(favMoviesFromLocalStorage);
+        console.log(favMoviesFromLocalStorage);
+    },[]);
     useEffect(()=>{
         axios.get(`https://api.themoviedb.org/3/trending/movie/day?api_key=ef18ee10d1abf9cc39599d8923db0394&page=${pageNo}`)
         .then((response)=>{
-            //console.log(response);
             setMovies(response.data.results);
         })
     },[pageNo]);
@@ -30,9 +55,7 @@ export default function(){
     //conditional loading
     if(movies==undefined){
         return(
-            <div>
-                Loading...!
-            </div>
+            <ShimmerSimpleGallery  card imageHeight={300} imageWidth={150} col={4} caption />
         )
     }
     //console.log(movies);
@@ -45,7 +68,14 @@ export default function(){
                 {/*we will reuse MovieCard to show multiple movies which
                    will be having same structure */ }
                 {movies.map((movieObj)=>{
-                    return(<MovieCard key={movieObj.id} title={movieObj.title} poster_path={movieObj.poster_path}/>
+                    return(<MovieCard 
+                        id={movieObj.id}
+                        key={movieObj.id} 
+                        title={movieObj.title} 
+                        poster_path={movieObj.poster_path}
+                        watchList={watchList}
+                        handleAddToWatchList={handleAddToWatchList}
+                        handleRemoveFromWatchList={handleRemoveFromWatchList}/>
                     )
                 })}
             </div> 

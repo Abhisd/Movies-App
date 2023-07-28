@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { ShimmerSimpleGallery } from "react-shimmer-effects-18";
 export default function Banner(){
     let [movieObj,setMovieObj]=useState({});
 
@@ -18,15 +19,14 @@ export default function Banner(){
 
     if(movieObj.poster_path==undefined){
         return(
-            <>Loading...!</>
-        )
+            <ShimmerSimpleGallery card imageHeight={300} caption />        )
     }
     
    
     
 
     return(
-        <div className="h-[90vh] bg-cover bg-center flex items-end " style={{backgroundImage:`url(https://image.tmdb.org/t/p/original/${movieObj.poster_path})`}}>
+        <div className="h-[90vh] bg-cover bg-center hover:bg-contain hover:bg-no-repeat duration-1000  flex items-end " style={{backgroundImage:`url(https://image.tmdb.org/t/p/original/${movieObj.poster_path})`}}>
             <div className="text-white bg-stone-600/50 w-full text-center p-4 text-1xl ">
                 {movieObj.title}
             </div>
