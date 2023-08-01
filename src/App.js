@@ -1,3 +1,4 @@
+import { useState,useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import './App.css';
@@ -7,6 +8,37 @@ import Navbar from './Components/Navbar';
 import Watchlist from './Components/Watchlist';
 
 function App() {
+  let [watchList,setWatchList]=useState([]);
+
+  let handleAddToWatchList=(movieObj)=>{
+    // watchList.push(id);
+    // setWatchList(watchList);
+    // console.log(watchList); 
+    let newWatchList=[...watchList,movieObj];
+    localStorage.setItem("movies-app",JSON.stringify(newWatchList));
+    setWatchList(newWatchList);
+    //console.log(newWatchList);
+    //same thing in one line
+    //setWatchList([...watchList,id]);
+}
+
+let handleRemoveFromWatchList=(movieObj)=>{
+    let newWatchList=watchList.filter((movie)=>{
+        return movie.id!=movieObj.id;
+    });
+    localStorage.setItem("movies-app",JSON.stringify(newWatchList));
+    setWatchList(newWatchList);
+    //console.log(newWatchList);
+}
+useEffect(()=>{
+  let favMoviesFromLocalStorage=JSON.parse(localStorage.getItem("movies-app"));
+  if(favMoviesFromLocalStorage==null){
+      return ;
+  }
+  setWatchList(favMoviesFromLocalStorage);
+  console.log(favMoviesFromLocalStorage);
+},[]);
+
   return (
     <BrowserRouter>
       <Navbar/>
@@ -14,22 +46,19 @@ function App() {
         <Route path="/" element={
           <>
           <Banner/>
-          <Movies />
+          <Movies watchList={watchList} handleAddToWatchList={handleAddToWatchList}
+                  handleRemoveFromWatchList={handleRemoveFromWatchList}
+                  setWatchList={setWatchList}/>
           </>
         }></Route>
         <Route path="/watchlist" element={
-          <Watchlist/>
+          <Watchlist watchList={watchList}
+          handleRemoveFromWatchList={handleRemoveFromWatchList}/>
         }>
 
         </Route>
       </Routes>
     </BrowserRouter>
-    // <>
-    // <Navbar />
-    // <Banner />
-    // <Movies />
-    // <Watchlist />
-    // </>
   );
 }
 
