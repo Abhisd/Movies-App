@@ -7,23 +7,12 @@ import { ShimmerSimpleGallery,ShimmerPostList } from "react-shimmer-effects-18";
 
 export default function(props){
     let [movies,setMovies]=useState(undefined);
-    let [pageNo,setPageNo]=useState(1);
-    let handleNext=()=>{
-        setPageNo(pageNo+1);
-    }
-
-    let handlePrev=()=>{
-        if(pageNo>1){
-            setPageNo(pageNo-1);
-        }
-        
-    }
     useEffect(()=>{
-        axios.get(`https://api.themoviedb.org/3/trending/movie/day?api_key=ef18ee10d1abf9cc39599d8923db0394&page=${pageNo}`)
+        axios.get(`https://api.themoviedb.org/3/trending/movie/day?api_key=ef18ee10d1abf9cc39599d8923db0394&page=${props.pageNo}`)
         .then((response)=>{
             setMovies(response.data.results);
         })
-    },[pageNo]);
+    },[props.pageNo]);
 
     //conditional loading
     if(movies==undefined){
@@ -53,7 +42,7 @@ export default function(props){
                     )
                 })}
             </div> 
-            <Pagination page={pageNo} handleNext={handleNext} handlePrev={handlePrev}/>   
+            <Pagination page={props.pageNo} handleNext={props.handleNext} handlePrev={props.handlePrev}/>   
         </div>
     )
 }

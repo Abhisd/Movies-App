@@ -9,6 +9,7 @@ import Watchlist from './Components/Watchlist';
 
 function App() {
   let [watchList,setWatchList]=useState([]);
+  let [pageNo,setPageNo]=useState(1);
 
   let handleAddToWatchList=(movieObj)=>{
     // watchList.push(id);
@@ -36,8 +37,20 @@ useEffect(()=>{
       return ;
   }
   setWatchList(favMoviesFromLocalStorage);
-  console.log(favMoviesFromLocalStorage);
+  //console.log(favMoviesFromLocalStorage);
 },[]);
+
+
+let handleNext=()=>{
+    setPageNo(pageNo+1);
+}
+
+let handlePrev=()=>{
+    if(pageNo>1){
+        setPageNo(pageNo-1);
+    }
+    
+}
 
   return (
     <BrowserRouter>
@@ -48,12 +61,16 @@ useEffect(()=>{
           <Banner/>
           <Movies watchList={watchList} handleAddToWatchList={handleAddToWatchList}
                   handleRemoveFromWatchList={handleRemoveFromWatchList}
-                  setWatchList={setWatchList}/>
+                  setWatchList={setWatchList}
+                  handleNext={handleNext}
+                  handlePrev={handlePrev}
+                  pageNo={pageNo}/>
           </>
         }></Route>
         <Route path="/watchlist" element={
           <Watchlist watchList={watchList}
-          handleRemoveFromWatchList={handleRemoveFromWatchList}/>
+          handleRemoveFromWatchList={handleRemoveFromWatchList}
+          setWatchList={setWatchList}/>
         }>
 
         </Route>
